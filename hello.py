@@ -4,7 +4,7 @@
 
 import os
 from threading import Thread
-from flask import Flask, render_template, session, redirect, url_for, flash
+from flask import Flask, render_template, session, redirect, url_for
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
@@ -34,13 +34,13 @@ app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # mail
 app.config["FLASKY_MAIL_SUBJECT_PREFIX"] = '[Flasky]'
-app.config["FLASKY_MAIL_SENDER"] = "Flask Admin <ren8777153@126.com>"
+app.config["FLASKY_MAIL_SENDER"] = "Flask Admin <sender@example.com>"
 app.config["MAIL_SERVER"] = "smtp.126.com"
 app.config["MAIL_PORT"] = 25
 app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = "ren8777153@126.com"
-app.config["MAIL_PASSWORD"] = "ren513401873"
-app.config["FLASKY_ADMIN"] = "ren8777153@126.com"
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["FLASKY_ADMIN"] = os.environ.get("FLASKY_ADMIN")
 
 # app attributes.
 manager = Manager(app)
@@ -116,7 +116,6 @@ def send_email():
             db.session.add(user)
             session['known'] = False
             if app.config["FLASKY_ADMIN"]:
-                # send_mail(app.config["FLASKY_ADMIN"], "New User",
                 send_mail(app.config["FLASKY_ADMIN"], "New User", "mail/new_user", user=user)
         else:
             session["known"] = True
